@@ -25,19 +25,27 @@ $isFirstSection = true;
 foreach($xml->xpath("//outline") as $outline )
 {
     $title = htmlspecialchars($outline['text'], ENT_QUOTES);
-    $feed = htmlspecialchars($outline['htmlUrl']);
-    if($feed)
+    $feed = htmlspecialchars($outline['xmlUrl'] ?? "");
+    $blog = htmlspecialchars($outline['htmlUrl'] ?? "");
+
+	if(strpos($feed, "kill-the-newsletter.com") !== false) {
+		continue
+	}
+
+    // remove if contains kill the news letter because of personal link.
+    if($feed && $blog)
     {
-        $out .= "\n\t" . '<DT><A HREF="' . str_replace("http://", "https://", $feed) . '">' . $title . '</A>';
+        // $out .= "\n\t" . '<DT><A HREF="' . $feed . '">' . $title . '</A>';
+        $out .= sprintf("\n\t<dt><a href='%s'>[RSS]</a> <a href='%s'>%s</a>", $feed, $blog, $title);
     }
     else
     {
         if ($isFirstSection) {
             $isFirstSection = false;
         } else {
-            $out .= "</DL>\n";
+            $out .= "</dl>\n";
         }
-        $out .= "<DT><H3>$title</H3><DL>";
+        $out .= "<dt><h3>$title</h3><dl>";
     }
 }
 
@@ -45,11 +53,32 @@ $out .= "\n"
 
 ?>
 
-<!DOCTYPE NETSCAPE-Bookmark-file-1>
+<!DOCTYPE html>
 <HTML>
+<head>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-VP6W3LC8BL"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-VP6W3LC8BL');
+</script>
+
+
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
 <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
 <TITLE>My RSS Feed List</TITLE>
-<H1>My RSS Feed List</H1>
-<?php echo $out; ?>
+</head>
 
+<H1>My RSS Feed List</H1>
+<a href="./rss.opml" download>下載rss.opml</a>
+<p>Updated At: 
+<?php
+date_default_timezone_set('Asia/Taipei'); // 設定時區為台北
+echo date('Y-m-d H:i:s');
+?>
+</p>
+<?php echo $out; ?>
