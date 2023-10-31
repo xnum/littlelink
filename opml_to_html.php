@@ -29,7 +29,7 @@ foreach($xml->xpath("//outline") as $outline )
     $blog = htmlspecialchars($outline['htmlUrl'] ?? "");
 
 	if(strpos($feed, "kill-the-newsletter.com") !== false) {
-		continue
+		continue;
 	}
 
     // remove if contains kill the news letter because of personal link.
